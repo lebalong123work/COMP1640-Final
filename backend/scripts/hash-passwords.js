@@ -13,7 +13,7 @@ async function hashPasswords() {
     for (const user of users) {
       const hashed = await bcrypt.hash(user.password, 10);
       await pool.query('UPDATE users SET password_hash = $1 WHERE email = $2', [hashed, user.email]);
-      console.log(✅ Đã cập nhật password cho ${user.email});
+      console.log(`✅ Đã cập nhật password cho ${user.email}`);
     }
   } catch (err) {
     console.error('❌ Lỗi:', err);
