@@ -1,6 +1,7 @@
 const pool = require('../config/db');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+
 require('dotenv').config({ path: require('path').join(__dirname, '../../.env') });
 
 const signToken = (user) => jwt.sign(
@@ -23,9 +24,7 @@ exports.login = async (req, res) => {
     if (!user) return res.status(401).json({ error: 'Invalid credentials' });
     const valid = await bcrypt.compare(password, user.password);
     if (!valid) return res.status(401).json({ error: 'Invalid credentials' });
-    
     await pool.query('INSERT INTO audit_logs (user_id, action, details) VALUES ($1, $2, $3)', [user.id, 'USER_LOGIN', `${user.name} logged in`]);
-    
     const token = signToken(user);
     const { password: _, ...safeUser } = user;
     res.json({ data: { token, user: safeUser } });
