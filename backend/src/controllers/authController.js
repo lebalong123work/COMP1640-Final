@@ -30,3 +30,16 @@ exports.login = async (req, res) => {
     res.json({ data: { token, user: safeUser } });
   } catch (e) { res.status(500).json({ error: e.message }); }
 };
+
+exports.me = async (req, res) => {
+  try {
+    const { rows } = await pool.query(`
+      SELECT u.id, u.name, u.email, u.role, u.is_active, u.department_id, d.name as department
+      FROM users u
+      LEFT JOIN departments d ON u.department_id = d.id
+      WHERE u.id = $1
+    `, [req.user.id]);
+    if (!rows[0]) return res.status(404).json({ error: 'User not found' });
+    res.json({ data: rows[0] });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+};
