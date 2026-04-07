@@ -70,6 +70,140 @@ export default function StatisticsPage({ user }) {
           </div>
         ))}
       </div>
+
+      {/* Ideas by Category — CSS bar chart */}
+      <div className="card" style={{ marginBottom: '1.75rem' }}>
+        <div className="card-header"><span className="card-title">Ideas by Category</span></div>
+        <div className="card-body">
+          <div className="bar-chart">
+            {stats.byCategory.filter(d => d.count > 0).map((d, i) => (
+              <div key={i} className="bar-row">
+                <div className="bar-label">{d.cat}</div>
+                <div className="bar-track">
+                  <div className="bar-fill" style={{ width: `${(d.count / maxCat) * 100}%`, background: 'linear-gradient(to right, var(--gold), var(--gold-light))' }} />
+                </div>
+                <div className="bar-count">{d.count}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Recharts section */}
+      <div style={{ marginBottom: '1.75rem' }}>
+        {/* Category Split pie with labels */}
+        <div className="card">
+          <div className="card-header"><span className="card-title">Category Split</span></div>
+          <div className="card-body" style={{ display: 'flex', justifyContent: 'center' }}>
+            {catPieData.length > 0 ? (
+              <ResponsiveContainer width="100%" height={280}>
+                <PieChart>
+                  <Pie
+                    data={catPieData}
+                    cx="50%"
+                    cy="42%"
+                    innerRadius={55}
+                    outerRadius={90}
+                    dataKey="value"
+                    labelLine={false}
+                    label={renderCustomLabel}
+                  >
+                    {catPieData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    contentStyle={{ fontSize: '0.8rem', borderRadius: '8px' }}
+                    formatter={(value, name) => [`${value} idea(s)`, name]}
+                  />
+                  <Legend wrapperStyle={{ fontSize: '0.72rem', paddingTop: '8px' }} />
+                </PieChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="empty-state"><p>No category data</p></div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div className="grid-2" style={{ marginBottom: '1.75rem' }}>
+        {/* Ideas by Department bar chart */}
+        <div className="card">
+          <div className="card-header"><span className="card-title">Ideas by Department</span></div>
+          <div className="card-body">
+            {deptBarData.length > 0 ? (
+              <ResponsiveContainer width="100%" height={260}>
+                <BarChart data={deptBarData} margin={{ top: 20, right: 5, left: -20, bottom: 50 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+                  <XAxis dataKey="name" tick={{ fontSize: 10, fill: 'var(--text-3)' }} angle={-30} textAnchor="end" interval={0} />
+                  <YAxis tick={{ fontSize: 10, fill: 'var(--text-3)' }} allowDecimals={false} />
+                  <Tooltip contentStyle={{ fontSize: '0.8rem', borderRadius: '8px' }} />
+                  <Bar dataKey="ideas" fill="var(--gold)" radius={[4, 4, 0, 0]}>
+                    <LabelList dataKey="ideas" position="top" style={{ fontSize: '10px', fill: 'var(--text-2)', fontWeight: 600 }} />
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="empty-state"><p>No department data</p></div>
+            )}
+          </div>
+        </div>
+
+        {/* Ideas by Department pie with labels */}
+        <div className="card">
+          <div className="card-header"><span className="card-title">Department Share</span></div>
+          <div className="card-body" style={{ display: 'flex', justifyContent: 'center' }}>
+            {pieData.length > 0 ? (
+              <ResponsiveContainer width="100%" height={280}>
+                <PieChart>
+                  <Pie
+                    data={pieData}
+                    cx="50%"
+                    cy="42%"
+                    outerRadius={90}
+                    dataKey="value"
+                    labelLine={false}
+                    label={renderCustomLabel}
+                  >
+                    {pieData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    contentStyle={{ fontSize: '0.8rem', borderRadius: '8px' }}
+                    formatter={(value, name) => [`${value} idea(s)`, name]}
+                  />
+                  <Legend wrapperStyle={{ fontSize: '0.72rem', paddingTop: '8px' }} />
+                </PieChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="empty-state"><p>No department data</p></div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Contributors within Department */}
+      <div className="card" style={{ marginBottom: '1.75rem' }}>
+        <div className="card-header"><span className="card-title">Contributors within Department</span></div>
+        <div className="card-body">
+          {contributorsBarData.length > 0 ? (
+            <ResponsiveContainer width="100%" height={260}>
+              <BarChart data={contributorsBarData} margin={{ top: 20, right: 5, left: -20, bottom: 50 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+                <XAxis dataKey="name" tick={{ fontSize: 10, fill: 'var(--text-3)' }} angle={-30} textAnchor="end" interval={0} />
+                <YAxis tick={{ fontSize: 10, fill: 'var(--text-3)' }} allowDecimals={false} />
+                <Tooltip contentStyle={{ fontSize: '0.8rem', borderRadius: '8px' }} />
+                <Bar dataKey="contributors" fill="var(--green)" radius={[4, 4, 0, 0]}>
+                  <LabelList dataKey="contributors" position="top" style={{ fontSize: '10px', fill: 'var(--text-2)', fontWeight: 600 }} />
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="empty-state"><p>No contributor data</p></div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
