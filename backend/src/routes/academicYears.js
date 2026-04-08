@@ -1,0 +1,10 @@
+const router = require('express').Router();
+const auth = require('../middleware/auth');
+const role = require('../middleware/role');
+const c = require('../controllers/academicYearController');
+router.get('/', auth, c.list);
+router.post('/', auth, role('admin'), c.create);
+router.put('/:id', auth, role('admin'), c.update);
+router.delete('/:id', auth, role('admin'), c.remove);
+router.post('/:yearId/closure-dates', auth, role('admin'), c.addClosureDate);
+module.exports = router;
