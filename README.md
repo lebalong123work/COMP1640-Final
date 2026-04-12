@@ -152,15 +152,48 @@ cd ../frontend && npm install
 
 ### Step 2: Set Up Environment Variables
 
-Create `.env` file in `backend/` with sample content:
-
+Create a `.env` file in the `backend/` directory. You can use the following template as a starting point:
 ```env
-DATABASE_URL=postgres://username:password@localhost:5432/your_database
+DATABASE_URL=your_postgresql_connection_string
+JWT_SECRET=your_random_secret_key
 PORT=5000
+EMAIL_USER=your_email@gmail.com
+EMAIL_PASS=your_email_app_password
 ```
+####  Detailed Database Configuration (`DATABASE_URL`)
 
-- `DATABASE_URL`: PostgreSQL connection string.
-- `PORT`: Backend port, default `5000`.
+The system requires a PostgreSQL database to store ideas, users, and votes. You can choose one of the two methods below to set up your connection string:
+
+**Option 1: Local PostgreSQL (Manual Setup)**
+Use this if you have PostgreSQL installed on your local machine (e.g., using pgAdmin).
+
+* **URL Format:** `postgresql://[USER]:[PASSWORD]@localhost:5432/[DATABASE_NAME]`
+* **How to fill:**
+  * `USER`: Your PostgreSQL username (default is usually `postgres`).
+  * `PASSWORD`: The password you created during PostgreSQL installation.
+  * `DATABASE_NAME`: The name of the specific database you created for this portal project.
+* **Example:** `postgresql://postgres:mysecretpass@localhost:5432/idea_portal_db`
+
+**Option 2: Neon DB (Cloud/Managed Setup)**
+Recommended for easy deployment and sharing without local installation.
+
+* **Steps:**
+  1. Register an account at [Neon.tech](https://neon.tech/).
+  2. Create a new project and select the PostgreSQL version.
+  3. On your project dashboard, find the **Connection Details** section.
+  4. Copy the **Connection string**. It should look similar to this: 
+     `postgresql://neondb_owner:[PASSWORD]@[HOST]/neondb?sslmode=require`
+* **Note:** The `?sslmode=require` parameter is mandatory for Neon connections to ensure security.
+
+####  Other Configuration Variables
+
+* **`JWT_SECRET`**: A secret key used to sign and verify login tokens. Use a strong, random string (e.g., `comp1640_secret_key_2025`).
+* **`PORT`**: The port number on which the backend server will listen. Default is set to `5000`.
+* **`EMAIL_USER`**: The Gmail address used by the system to send notifications or password recovery emails.
+* **`EMAIL_PASS`**: Your Google **App Password**.
+  * *Note:* Do NOT use your regular Gmail password.
+  * Go to your Google Account -> Security -> 2-Step Verification -> App Passwords to generate a unique 16-character code for this application.
+
 
 ### Step 3: Create Database and Seed Data
 
